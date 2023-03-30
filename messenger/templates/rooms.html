@@ -1,0 +1,59 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Чат - комнаты{% endblock title %}
+
+
+{% block content %}
+
+   {% comment %} {{ chat_rooms }}
+{{ user.username}} {% endcomment %}
+{% if chat_rooms %}
+<h3 class="text-center mt-4">Чат - комнаты</h3>
+<div class="text-center">
+   <a href='/'>Назад</a>
+</div>
+
+<table class="table table-dark align-middle table-ms mt-2 w-75 mt-4 chat_rooms">
+   {% for room in chat_rooms %}
+      <tr class="">
+         
+         <td class="text-light ps-3 w-75 fs-3 ">
+            {{room.name}} <br>
+            <span class='fs-6'>Админ - {{room.creator.username}}</span>
+         </td>
+         {% if room.id in members %}
+            {% if request.user.id == room.creator.id %}
+               <td><a href={% url 'outFromRoom' room.id %}  id='out_from_room'>Отключиться</a></td>
+            {% else %}
+               <td><a href={% url 'outFromRoom' room.id %}  id='out_from_room'>Отключиться</a></td>
+            {% endif %}
+            <td><a href={% url 'room' room.id %} >Войти</a></td>
+         {% else %}
+            <td><a href={% url 'joinToRoom' room.id %}  id='join_to_room'>Подключиться</a></td>
+            <td><a href={% url 'room' room.id %} >Войти</a></td>
+         {% endif %}
+         {% if room.creator_id == request.user.id%}
+            <td class="text-end pe-3"> <a href={% url 'room_edit_delete' room.id %} >Изменить</a></td>
+            <td class="text-end pe-3"> <a href={% url 'room_edit_delete' room.id %} >Удалить</a></td>
+         {% else %}
+            <td></td>
+            <td class="text-end pe-3"> <a>Удалить</a></td>
+         {% endif %}
+      </tr>
+   {% endfor %}
+</table>
+
+{% comment %} {{ request.user.username|json_script:"user_username" }} {% endcomment %}
+{% comment %} {{ chat_box_name|json_script:"box-name" }} {% endcomment %}
+
+{% comment %} {{ rooms|json_script:'rooms'}} {% endcomment %}
+{% else %}
+<div class="text-center">
+   <h3> Нет Чат-комнат</h3>
+   <a href='/' >Назад</a>
+</div>
+{% endif %}
+
+
+{% endblock content %}
